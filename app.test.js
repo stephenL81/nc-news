@@ -10,19 +10,36 @@ beforeEach(()=>{
 return seed(testData)
 })
 
+
 describe('api/topics', () => {
-    test('returns an array of each entry in the topics table as an object',()=>{
+
+    test('Returned should be an object',()=>{
         return request(app)
         .get('/api/topics')
         .expect(200)
         .then(({body})=>{
-            const{ rows } = body;
-            rows.forEach((row)=>{
-        expect(row).toHaveProperty('slug');
-        expect(row).toHaveProperty('description')
+            expect(typeof body).toBe('object')
         })
     });
+    })
+
+    test('200 returns an object containing an array of each entry in the topics table as an object',()=>{
+        return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then(({body})=>{
+        
+        expect(typeof body).toBe('object')
+        const { topics } = body;
+        expect(topics.length).toBe(3)
+           
+        topics.forEach((topic)=>{
+        expect(typeof topic).toBe('object')
+        expect(topic).toHaveProperty('slug');
+        expect(topic).toHaveProperty('description')
+        })
+    });
+    })
     
-})
+
     
-})

@@ -1,10 +1,13 @@
 const returnTopics = require("./model")
 
-function getTopics(req, res){
+function getTopics(req, res, next){
+    
 returnTopics()
 .then(data => {
-    res.status(200).send(data)
+    
+    res.status(200).send({'topics': data})
 })
+.catch(next)
 }
 
 
