@@ -1,4 +1,6 @@
 const returnTopics = require("./model")
+const fs = require('fs')
+const data = require('./endpoints.json')
 
 function getTopics(req, res, next){
     
@@ -11,4 +13,11 @@ returnTopics()
 }
 
 
-module.exports = getTopics;
+function getApi(req, res){
+    console.log(res)
+    res.status(200).send(data)
+}
+
+
+
+module.exports = {getTopics,getApi};
