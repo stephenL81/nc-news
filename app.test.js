@@ -3,7 +3,7 @@ const request = require('supertest');
 const connection = require('./db/connection')
 const seed = require("./db/seeds/seed")
 const testData = require("./db/data/test-data")
-const data = require('./endpoints.json')
+const endpointsData = require('./endpoints.json')
 
 afterAll(()=> connection.end());
 
@@ -52,7 +52,7 @@ describe('get /api',()=>{
     .get('/api')
     .expect(200)
     .then(({body})=>{
-    expect(body).toEqual(data);
+    expect(body).toEqual(endpointsData);
     
     })
 })

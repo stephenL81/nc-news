@@ -14,7 +14,6 @@ returnTopics()
 
 
 function getApi(req, res){
-    console.log(res)
     res.status(200).send(data)
 }
 
