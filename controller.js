@@ -1,4 +1,4 @@
-const returnTopics = require("./model")
+const {returnTopics,returnArticle} = require("./model")
 
 function getTopics(req, res, next){
     
@@ -10,5 +10,9 @@ returnTopics()
 .catch(next)
 }
 
+function getArticle(req, res){
+    returnArticle()
 
-module.exports = getTopics;
+}
+
+module.exports = {getTopics, getArticle}
