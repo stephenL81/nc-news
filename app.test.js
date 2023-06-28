@@ -3,7 +3,7 @@ const request = require('supertest');
 const connection = require('./db/connection')
 const seed = require("./db/seeds/seed")
 const testData = require("./db/data/test-data")
-const data = require('./endpoints.json')
+const endpointsData = require('./endpoints.json')
 
 afterAll(()=> connection.end());
 
@@ -52,9 +52,48 @@ describe('get /api',()=>{
     .get('/api')
     .expect(200)
     .then(({body})=>{
-    expect(body).toEqual(data);
+    expect(body).toEqual(endpointsData);
     
     })
 })
 })
+
+describe('GET /api/articles/:article_id',()=>{
+    test('should respond with 200 and the correct article for the id provided',()=>{
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({body})=>{
+            expect(typeof body).toBe('object')
+            expect(body.article).toHaveProperty('author');
+            expect(body.article).toHaveProperty('title');
+            expect(body.article).toHaveProperty('article_id');
+            expect(body.article).toHaveProperty('body');
+            expect(body.article).toHaveProperty('topic');
+            expect(body.article).toHaveProperty('created_at');
+            expect(body.article).toHaveProperty('votes');
+            expect(body.article).toHaveProperty('article_img_url');
+      
+        })
+        
+    })
+    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
+        return request(app)
+        .get('/api/articles/567')
+        .expect(404)
+        .then(({body})=>{
     
+            expect(body.msg).toBe('Not Found')
+    })
+})
+    
+test('should respond with a 400 if the provided id is not valid (eg not a number)',()=>{
+    return request(app)
+    .get('/api/articles/yo')
+    .expect(400)
+    .then(({body})=>{
+    
+        expect(body.msg).toBe('Bad Request')
+})
+})
+})
