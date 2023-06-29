@@ -66,13 +66,21 @@ describe('GET /api/articles/:article_id',()=>{
         .then(({body})=>{
             expect(typeof body).toBe('object')
             expect(body.article).toHaveProperty('author');
+            expect(body.article.author).toBeDefined()
             expect(body.article).toHaveProperty('title');
+            expect(body.article.title).toBeDefined()
             expect(body.article).toHaveProperty('article_id');
+            expect(body.article.article_id).toBeDefined();
             expect(body.article).toHaveProperty('body');
+            expect(body.article.body).toBeDefined();
             expect(body.article).toHaveProperty('topic');
+            expect(body.article.topic).toBeDefined()
             expect(body.article).toHaveProperty('created_at');
+            expect(body.article.created_at).toBeDefined()
             expect(body.article).toHaveProperty('votes');
+            expect(body.article.votes).toBeDefined();
             expect(body.article).toHaveProperty('article_img_url');
+            expect(body.article.article_img_url).toBeDefined();
       
         })
         

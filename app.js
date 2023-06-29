@@ -1,5 +1,4 @@
 const express = require('express')
-
 const {getTopics , getApi, getArticle}= require('./controller')
 
 const app = express();
