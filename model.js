@@ -9,10 +9,13 @@ function returnTopics(){
     })
 }
 
-function returnArticle(){
-    return db.query("SELECT * FROM articles WHERE article_id = $1" ,[article_id]) // do I need RETURNING?
-    .then(data => {
-        console.log (data);
+function returnArticle(articleId){
+    return db.query("SELECT * FROM articles WHERE article_id = $1" ,[articleId])
+    .then(({rows}) => {
+        if(rows.length === 0){
+            return Promise.reject(new Error('Not Found'))
+        }
+        return rows;
     })
 }
 
