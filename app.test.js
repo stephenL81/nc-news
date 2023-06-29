@@ -4,6 +4,8 @@ const connection = require('./db/connection')
 const seed = require("./db/seeds/seed")
 const testData = require("./db/data/test-data")
 const endpointsData = require('./endpoints.json')
+require("jest-sorted")
+
 
 afterAll(()=> connection.end());
 
@@ -64,12 +66,10 @@ describe('get /api/articles',()=>{
         .get('/api/articles')
         .expect(200)
         .then(({body})=>{
-
-            expect(typeof body).toBe('object')
             const { articles } = body;
             expect(articles.length).toBe(13)
+            expect(articles).toBeSorted({"key": "created_at", "descending": true})
             articles.forEach((article)=>{
-            expect(typeof article).toBe('object')
             expect(article).toHaveProperty('author')
             expect(article).toHaveProperty('title')
             expect(article).toHaveProperty('article_id')
@@ -78,6 +78,7 @@ describe('get /api/articles',()=>{
             expect(article).toHaveProperty('votes')
             expect(article).toHaveProperty('article_img_url')
             expect(article).toHaveProperty('comment_count')
+         
             })
         })
     })

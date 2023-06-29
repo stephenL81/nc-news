@@ -1,6 +1,5 @@
 
-const {returnTopics,returnArticle,returnArticles} = require("./model")
-const fs = require('fs')
+const {returnTopics,returnArticle,returnAllArticles} = require("./model")
 const data = require('./endpoints.json')
 
 
@@ -23,12 +22,12 @@ function getApi(req, res){
     res.status(200).send(data)
 }
 
-function getArticles(req,res){
-    returnArticles()
+function getAllArticles(req,res){
+    returnAllArticles()
     .then(data =>{
         res.status(200).send(data)
     })
 }
 
-module.exports = {getTopics,getApi,getArticles};
+module.exports = {getTopics,getApi,getArticle, getAllArticles};
 
