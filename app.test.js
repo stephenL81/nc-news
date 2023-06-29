@@ -58,3 +58,20 @@ describe('get /api',()=>{
 })
 })
     
+describe('get /api/articles',()=>{
+    test('should return an array of article objects with the correct properties',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body})=>{
+            expect(body[0]).toHaveProperty('author')
+            expect(body[0]).toHaveProperty('title')
+            expect(body[0]).toHaveProperty('article_id')
+            expect(body[0]).toHaveProperty('topic')
+            expect(body[0]).toHaveProperty('created_at')
+            expect(body[0]).toHaveProperty('votes')
+            expect(body[0]).toHaveProperty('article_img_url')
+            expect(body[0]).toHaveProperty('comment_count')
+        })
+    })
+})
