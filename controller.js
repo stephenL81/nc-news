@@ -1,7 +1,7 @@
 
-const {returnTopics,returnArticle} = require("./model")
-const fs = require('fs')
-const endpointsData = require('./endpoints.json')
+const {returnTopics,returnArticle,returnAllArticles} = require("./model")
+const data = require('./endpoints.json')
+
 
 
 
@@ -33,11 +33,23 @@ function getArticle(req, res, next){
       });
 }
 
-    function getApi(req, res){
-    res.status(200).send(endpointsData)
+
+function getArticle(req, res){
+    returnArticle()
 }
 
 
+    function getApi(req, res){
+    res.status(200).send(endpointsData)
 
-module.exports = {getTopics,getApi,getArticle};
+}
+
+function getAllArticles(req,res){
+    returnAllArticles()
+    .then(data =>{
+        res.status(200).send(data)
+    })
+}
+
+module.exports = {getTopics,getApi,getArticle, getAllArticles};
 

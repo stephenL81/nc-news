@@ -4,6 +4,8 @@ const connection = require('./db/connection')
 const seed = require("./db/seeds/seed")
 const testData = require("./db/data/test-data")
 const endpointsData = require('./endpoints.json')
+require("jest-sorted")
+
 
 afterAll(()=> connection.end());
 
@@ -58,6 +60,32 @@ describe('get /api',()=>{
 })
 })
 
+    
+describe('get /api/articles',()=>{
+    test('should return 200 and an array of article objects with the correct properties',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body})=>{
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            expect(articles).toBeSorted({"key": "created_at", "descending": true})
+            articles.forEach((article)=>{
+            expect(article).toHaveProperty('author')
+            expect(article).toHaveProperty('title')
+            expect(article).toHaveProperty('article_id')
+            expect(article).toHaveProperty('topic')
+            expect(article).toHaveProperty('created_at')
+            expect(article).toHaveProperty('votes')
+            expect(article).toHaveProperty('article_img_url')
+            expect(article).toHaveProperty('comment_count')
+         
+            })
+        })
+    })
+})
+
+
 describe('GET /api/articles/:article_id',()=>{
     test('should respond with 200 and the correct article for the id provided',()=>{
         return request(app)
@@ -105,3 +133,4 @@ test('should respond with a 400 if the provided id is not valid (eg not a number
 })
 })
 })
+
