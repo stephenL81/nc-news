@@ -59,19 +59,26 @@ describe('get /api',()=>{
 })
     
 describe('get /api/articles',()=>{
-    test('should return an array of article objects with the correct properties',()=>{
+    test('should return 200 and an array of article objects with the correct properties',()=>{
         return request(app)
         .get('/api/articles')
         .expect(200)
         .then(({body})=>{
-            expect(body[0]).toHaveProperty('author')
-            expect(body[0]).toHaveProperty('title')
-            expect(body[0]).toHaveProperty('article_id')
-            expect(body[0]).toHaveProperty('topic')
-            expect(body[0]).toHaveProperty('created_at')
-            expect(body[0]).toHaveProperty('votes')
-            expect(body[0]).toHaveProperty('article_img_url')
-            expect(body[0]).toHaveProperty('comment_count')
+
+            expect(typeof body).toBe('object')
+            const { articles } = body;
+            expect(articles.length).toBe(13)
+            articles.forEach((article)=>{
+            expect(typeof article).toBe('object')
+            expect(article).toHaveProperty('author')
+            expect(article).toHaveProperty('title')
+            expect(article).toHaveProperty('article_id')
+            expect(article).toHaveProperty('topic')
+            expect(article).toHaveProperty('created_at')
+            expect(article).toHaveProperty('votes')
+            expect(article).toHaveProperty('article_img_url')
+            expect(article).toHaveProperty('comment_count')
+            })
         })
     })
 })

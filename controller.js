@@ -24,7 +24,6 @@ function getApi(req, res){
 }
 
 function getArticles(req,res){
-    console.log('in controller')
     returnArticles()
     .then(data =>{
         res.status(200).send(data)
