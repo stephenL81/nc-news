@@ -1,6 +1,6 @@
 
 const {returnTopics,returnArticle,returnAllArticles} = require("./model")
-const data = require('./endpoints.json')
+const endpointsData = require('./endpoints.json')
 
 
 
@@ -34,9 +34,6 @@ function getArticle(req, res, next){
 }
 
 
-function getArticle(req, res){
-    returnArticle()
-}
 
 
     function getApi(req, res){

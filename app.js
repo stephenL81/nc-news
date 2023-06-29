@@ -2,7 +2,6 @@ const express = require('express')
 
 
 const {getTopics , getApi, getAllArticles, getArticle}= require('./controller')
-=======
 
 
 const app = express();
