@@ -15,7 +15,7 @@ function returnArticleComments(articleId){
         if(rows.length === 0){
             return Promise.reject({
                 status: 404,
-                msg: `No article found for article_id: ${articleId}`,
+                msg: `Not Found`,
               })
         }
         else{

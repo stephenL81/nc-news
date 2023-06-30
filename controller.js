@@ -20,18 +20,12 @@ function getTopics(req, res, next){
     }
     
     returnArticleComments(articleId)
-    .then(comments=>{
-            res.status(200).send({comments})
-        
-    })
-    .catch((error)=>{
-        if(error.status === 404){
-            res.status(404).send({msg : 'Not Found'})
-        }
-        else{
-        next(error);
-        }
-    })
+    .then(comments =>{
+        res.status(200).send({comments})
+        })
+        .catch(err =>{
+            next(err)
+        })
     }
 
     

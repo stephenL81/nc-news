@@ -175,7 +175,7 @@ describe('GET /api/articles/:article_id/comments',()=>{
         .expect(404)
         .then(({body})=>{
     
-            expect(body.msg).toBe('Not Found')
+            expect(body.msg).toBe(`Not Found`)
 
     })
 })
