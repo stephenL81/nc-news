@@ -3,7 +3,8 @@ const request = require('supertest');
 const connection = require('./db/connection')
 const seed = require("./db/seeds/seed")
 const testData = require("./db/data/test-data")
-const endpointsData = require('./endpoints.json')
+const endpointsData = require('./endpoints.json');
+const comments = require('./db/data/test-data/comments');
 require("jest-sorted")
 
 
@@ -134,3 +135,48 @@ test('should respond with a 400 if the provided id is not valid (eg not a number
 })
 })
 
+describe('GET /api/articles/:article_id/comments',()=>{
+    test('Should respond with 200 and the correct comments for the article',()=>{
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body})=>{
+            const { comments } = body;
+            expect(comments).toBeSorted({"key": "created_at", "ascending": true})
+            for(let i = 0; i < body.length; i++){
+                expect(body.comment),toHaveProperty('comment_id')
+                expect(typeof body.comment.comment_id).toBe('number')
+                expect(body.comment),toHaveProperty('votes')
+                expect(typeof body.comment.votes).toBe('number')
+                expect(body.comment),toHaveProperty('created_at')
+                expect(typeof body.comment.created_at).toBe('string')
+                expect(body.comment),toHaveProperty('author')
+                expect(typeof body.comment.author).toBe('string')
+                expect(body.comment),toHaveProperty('body')
+                expect(typeof body.comment.body).toBe('string')
+                expect(body.comment),toHaveProperty('article_id')
+                expect(typeof body.comment.ar ).toBe('number')
+            }
+        })
+    })
+    test('should respond with a 400 if the provided id is not valid (eg not a number)',()=>{
+        return request(app)
+        .get('/api/articles/hi/comments')
+        .expect(400)
+        .then(({body})=>{
+        
+            expect(body.msg).toBe('Bad Request')
+    })
+    })
+
+    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body})=>{
+    
+            expect(body.msg).toBe('Not Found')
+
+    })
+})
+})
