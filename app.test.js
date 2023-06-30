@@ -136,7 +136,7 @@ test('should respond with a 400 if the provided id is not valid (eg not a number
 })
 
 describe('GET /api/articles/:article_id/comments',()=>{
-    test('Should respond with 200 and the correct comments for the article',()=>{
+    test('Should respond with 200 and the correct comments for the article, sorted on ascending order',()=>{
         return request(app)
         .get('/api/articles/1/comments')
         .expect(200)
@@ -144,17 +144,17 @@ describe('GET /api/articles/:article_id/comments',()=>{
             const { comments } = body;
             expect(comments).toBeSorted({"key": "created_at", "ascending": true})
             for(let i = 0; i < body.length; i++){
-                expect(body.comment),toHaveProperty('comment_id')
+                expect(body.comment).toHaveProperty('comment_id')
                 expect(typeof body.comment.comment_id).toBe('number')
-                expect(body.comment),toHaveProperty('votes')
+                expect(body.comment).toHaveProperty('votes')
                 expect(typeof body.comment.votes).toBe('number')
-                expect(body.comment),toHaveProperty('created_at')
+                expect(body.comment).toHaveProperty('created_at')
                 expect(typeof body.comment.created_at).toBe('string')
-                expect(body.comment),toHaveProperty('author')
+                expect(body.comment).toHaveProperty('author')
                 expect(typeof body.comment.author).toBe('string')
-                expect(body.comment),toHaveProperty('body')
+                expect(body.comment).toHaveProperty('body')
                 expect(typeof body.comment.body).toBe('string')
-                expect(body.comment),toHaveProperty('article_id')
+                expect(body.comment).toHaveProperty('article_id')
                 expect(typeof body.comment.ar ).toBe('number')
             }
         })
@@ -179,12 +179,11 @@ describe('GET /api/articles/:article_id/comments',()=>{
 
     })
 })
-    test.only('should receive 200 and an empty array for an article with no comments',()=>{
+    test('should receive 200 and an empty array for an article with no comments',()=>{
         return request(app)
         .get('/api/articles/2/comments')
         .expect(200)
         .then(({body})=>{
-            console.log(body)
             expect(body.comments).toEqual([])
         })
     })
