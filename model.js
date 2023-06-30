@@ -10,7 +10,7 @@ function returnTopics(){
 }
 
 function returnArticleComments(articleId){
-    return db.query("SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at ASC" ,[articleId])
+    return db.query("SELECT * FROM articles WHERE article_id = $1;", [articleId])
     .then(({rows})=>{
         if(rows.length === 0){
             return Promise.reject({
@@ -18,8 +18,13 @@ function returnArticleComments(articleId){
                 msg: `No article found for article_id: ${articleId}`,
               })
         }
-        return rows;
-        
+        else{
+            return db.query("SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at ASC;" ,[articleId])
+            .then(({rows})=>{
+                console.log(rows)
+                return rows;
+            })
+        }
         })
     }
 

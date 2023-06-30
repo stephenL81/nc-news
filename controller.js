@@ -15,12 +15,19 @@ function getTopics(req, res, next){
 
     function getArticleComments(req, res,next){
     const articleId = req.params.article_id
+    console.log(articleId)
     if(isNaN(articleId)){
     res.status(400).send({msg: "Bad Request"})
     }
+    
     returnArticleComments(articleId)
     .then(comments=>{
-        res.status(200).send({comments})
+        // if(comments.length === 0){
+        // res.status(200).send({ msg : 'There are currently no comments for this article'})
+        // }
+        // else{
+            res.status(200).send({comments})
+        
     })
     .catch((error)=>{
         if(error.status === 404){

@@ -179,4 +179,13 @@ describe('GET /api/articles/:article_id/comments',()=>{
 
     })
 })
+    test.only('should receive 200 and an empty array for an article with no comments',()=>{
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({body})=>{
+            console.log(body)
+            expect(body.comments).toEqual([])
+        })
+    })
 })
