@@ -1,5 +1,5 @@
 
-const {returnTopics,returnArticle,returnAllArticles,returnArticleComments} = require("./model")
+const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb} = require("./model")
 const endpointsData = require('./endpoints.json')
 
 
@@ -62,5 +62,21 @@ function getAllArticles(req,res){
     })
 }
 
-module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments};
+function addComment(req , res , next){
+    const articleId = req.params.article_id;
+    const username = req.body.username;   // why am I getting undefined for what is sent???
+    const body = req.body.body;
+   
+    addCommentToDb(articleId , username, body)
+    .then(comment =>{
+    res.status(201).send({ comment });
+    })
+
+.catch(next)
+}
+
+ // I need to add some error handling here
+    
+
+module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment};
 

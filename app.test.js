@@ -188,3 +188,41 @@ describe('GET /api/articles/:article_id/comments',()=>{
         })
     })
 })
+
+describe('POST /api/articles/:article_id/comments',()=>{
+    test('should add a comment for article', done => {
+        request(app)
+          .post('/api/articles/1/comments')
+          .send({ "username": 'lurker', "body": 'Good effort!' })
+          .expect(201)
+          .end((err, res) => {      //.next({comment}) not working , need to look online/notes why. Is this different for post?
+            if (err) return done(err);
+      
+            const comment = res.body.comment;
+            expect(comment).toBeDefined();
+            expect(comment.article_id).toBe(1);
+            expect(comment.author).toBe('lurker');
+            expect(comment.body).toBe('Good effort!');
+            done();
+          });
+      });
+      
+      xtest('should give a 404 when the request is missing a required field', (done) => {
+        request(app)
+            .post('/api/articles/2/comments')
+            .send({ "body": "not bad" })
+            .expect(400)
+            .end((err, res) => {
+                if (err) { 
+                    done(err);
+                } else {
+                    const error = res.body.error;
+                    expect(error).toBeDefined();
+                    expect(error).toBe('Bad Request');
+                    done();
+                }
+            });
+    });
+
+      
+})

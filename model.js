@@ -44,4 +44,17 @@ function returnAllArticles(){
         return {"articles":data.rows}
     })
 }
-module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments}
+
+function addCommentToDb(articleId ,username, body){
+    return db.query(`INSERT INTO comments(article_id, author, body) VALUES ($1, $2, $3)  RETURNING *`, [articleId, username , body]) // IN QUERY IS IT USERNAME OR AUTHOR?
+    .then(result => {
+        console.log('in the model')
+    return result.rows[0]
+    })
+    .catch(err => {
+        // console.error(err); // Log the error details
+        throw err; // Re-throw the error to be caught by the next error handler
+      });
+}
+    
+module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb}

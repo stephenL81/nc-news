@@ -1,10 +1,13 @@
 const express = require('express')
+const bodyParser = require('body-parser');
 
 
-const {getTopics , getApi, getAllArticles, getArticle,getArticleComments}= require('./controller')
+const {getTopics , getApi, getAllArticles, getArticle,getArticleComments,addComment}= require('./controller')
 
 
 const app = express();
+
+app.use(bodyParser.json());
 
 app.get('/api/topics' , getTopics)
 
@@ -16,7 +19,7 @@ app.get('/api/articles/:article_id' , getArticle)
 
 app.get('/api/articles/:article_id/comments', getArticleComments)
 
-
+app.post('/api/articles/:article_id/comments', addComment);
 
 
 app.use((err, req, res, next)=>{
