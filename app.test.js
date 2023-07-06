@@ -159,6 +159,18 @@ describe('GET /api/articles/:article_id/comments',()=>{
             }
         })
     })
+    
+    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body})=>{
+            
+            expect(body.msg).toBe(`Not Found`)
+            
+        })
+    })
+    
     test('should respond with a 400 if the provided id is not valid (eg not a number)',()=>{
         return request(app)
         .get('/api/articles/hi/comments')
@@ -169,16 +181,6 @@ describe('GET /api/articles/:article_id/comments',()=>{
     })
     })
 
-    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
-        return request(app)
-        .get('/api/articles/999/comments')
-        .expect(404)
-        .then(({body})=>{
-    
-            expect(body.msg).toBe(`Not Found`)
-
-    })
-})
     test('should receive 200 and an empty array for an article with no comments',()=>{
         return request(app)
         .get('/api/articles/2/comments')
@@ -207,22 +209,26 @@ describe('POST /api/articles/:article_id/comments',()=>{
           });
       });
       
-      xtest('should give a 404 when the request is missing a required field', (done) => {
+      xtest('should give a 400 when the request is missing a required field', (done) => {
         request(app)
             .post('/api/articles/2/comments')
             .send({ "body": "not bad" })
             .expect(400)
-            .end((err, res) => {
-                if (err) { 
-                    done(err);
-                } else {
-                    const error = res.body.error;
-                    expect(error).toBeDefined();
-                    expect(error).toBe('Bad Request');
-                    done();
-                }
-            });
+            .then(({body})=>{
+        console.log(body)
+                expect(body.msg).toBe('Required fields not provided')
+            // .end((err, res) => {
+            //     if (err) { 
+            //         done(err);
+            //     } else {
+            //         const error = res.body.error;
+            //         expect(error).toBeDefined();
+            //         expect(error).toBe('Bad Request');
+            //         done();
+            //     }
+            // });
     });
 
       
+})
 })

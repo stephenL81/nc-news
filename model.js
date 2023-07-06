@@ -52,7 +52,7 @@ function addCommentToDb(articleId ,username, body){
     return result.rows[0]
     })
     .catch(err => {
-        // console.error(err); // Log the error details
+        console.error(err); // Log the error details
         throw err; // Re-throw the error to be caught by the next error handler
       });
 }

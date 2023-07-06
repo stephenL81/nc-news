@@ -75,7 +75,7 @@ function addComment(req , res , next){
 .catch(next)
 }
 
- // I need to add some error handling here
+ 
     
 
 module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment};
