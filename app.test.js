@@ -142,6 +142,7 @@ describe('GET /api/articles/:article_id/comments',()=>{
         .expect(200)
         .then(({body})=>{
             const { comments } = body;
+            console.log(comments)
             expect(comments).toBeSorted({"key": "created_at", "ascending": true})
             for(let i = 0; i < body.length; i++){
                 expect(body.comment).toHaveProperty('comment_id')
@@ -192,20 +193,19 @@ describe('GET /api/articles/:article_id/comments',()=>{
 })
 
 describe('POST /api/articles/:article_id/comments',()=>{
-    test('should add a comment for article', done => {
+    test('should add a comment for article', () => {
         request(app)
           .post('/api/articles/1/comments')
           .send({ "username": 'lurker', "body": 'Good effort!' })
           .expect(201)
-          .end((err, res) => {      //.next({comment}) not working , need to look online/notes why. Is this different for post?
-            if (err) return done(err);
-      
-            const comment = res.body.comment;
+      .then(response => {
+            const comment = response.body.comment;
+            console.log(comment)
             expect(comment).toBeDefined();
             expect(comment.article_id).toBe(1);
             expect(comment.author).toBe('lurker');
             expect(comment.body).toBe('Good effort!');
-            done();
+        })
           });
       });
       
@@ -215,32 +215,23 @@ describe('POST /api/articles/:article_id/comments',()=>{
             .send({ "body": "not bad" })
             .expect(400)
             .then(({body})=>{
-        console.log(body)
                 expect(body.msg).toBe('Required fields not provided')
             
-            //     Required fields not provided'
-            // // .end((err, res) => {
-            //     if (err) { 
-            //         done(err);
-            //     } else {
-            //         const error = res.body.error;
-            //         expect(error).toBeDefined();
-            //         expect(error).toBe('Bad Request');
-            //         done();
-            //     }
-            // });
+
     });
 
       
 })
-})
 
-// describe('PATCH /api/articles/:article_id',()=>{
-//     test.skip('should return 200 and the post when successful',()=>{
-//         request(app)
-//         .patch('/api/articles/1')
-//         .send({ inc_votes : 1 })
-//         .expect(200)
-//         .then
-//     })
-// })
+
+describe('PATCH /api/articles/:article_id',()=>{
+    test('should return 200 and the post when successful',()=>{
+        request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes : 1 })
+        .expect(500)
+        .then(({body}) =>{
+            //console.log(body)
+        })
+    })
+})

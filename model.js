@@ -47,9 +47,14 @@ function returnAllArticles(){
 
 function addCommentToDb(articleId ,username, body){
     if (!username || !body) return Promise.reject({ status: 400, msg: "Required fields not provided"});
+    console.log('result')
     return db.query(`INSERT INTO comments(article_id, author, body) VALUES ($1, $2, $3)  RETURNING *`, [articleId, username , body])
     .then(result => {
     return result.rows[0]
+    })
+    .catch(err =>{
+        console.log(err)
+        throw err;
     })
 
 }
@@ -59,6 +64,11 @@ function changeDbVotes(articleId , voteChange){
 if(!articleId || !voteChange) return Promise.reject({ status: 400, msg: "Required fields not provided"});
 return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2`, [voteChange, articleId])
 .then(result =>{
+    if(result.rows.length === 0){
+        return Promise.reject({
+            status: 404,
+            msg: `Not Found`,
+    })}
     console.log(result)
     return result.rows[0]
 })

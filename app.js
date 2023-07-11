@@ -44,6 +44,13 @@ app.use((err, req, res,next)=>{
     }else next(err)
 })
 
+app.use((err, req, res,next)=>{
+    if(err.code === '42P01'){
+        res.status(500).send({msg: 'table does not exist'})
+    }else next(err)
+})
+
+
 app.use((err , req, res, next)=>{
     res.status(500).send('Server Error');
 })

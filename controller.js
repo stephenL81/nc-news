@@ -66,7 +66,6 @@ function addComment(req , res , next){
     const articleId = req.params.article_id;
     const username = req.body.username;   // why am I getting undefined for what is sent???
     const body = req.body.body;
-   
     addCommentToDb(articleId , username, body)
     .then(comment =>{
     res.status(201).send({ comment });
