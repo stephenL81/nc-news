@@ -209,7 +209,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
           });
       });
       
-      xtest('should give a 400 when the request is missing a required field', (done) => {
+      test('should give a 400 when the request is missing a required field', () => {
         request(app)
             .post('/api/articles/2/comments')
             .send({ "body": "not bad" })
@@ -217,7 +217,9 @@ describe('POST /api/articles/:article_id/comments',()=>{
             .then(({body})=>{
         console.log(body)
                 expect(body.msg).toBe('Required fields not provided')
-            // .end((err, res) => {
+            
+            //     Required fields not provided'
+            // // .end((err, res) => {
             //     if (err) { 
             //         done(err);
             //     } else {
@@ -232,3 +234,13 @@ describe('POST /api/articles/:article_id/comments',()=>{
       
 })
 })
+
+// describe('PATCH /api/articles/:article_id',()=>{
+//     test.skip('should return 200 and the post when successful',()=>{
+//         request(app)
+//         .patch('/api/articles/1')
+//         .send({ inc_votes : 1 })
+//         .expect(200)
+//         .then
+//     })
+// })

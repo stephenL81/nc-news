@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 
 
-const {getTopics , getApi, getAllArticles, getArticle,getArticleComments,addComment}= require('./controller')
+const {getTopics , getApi, getAllArticles, getArticle,getArticleComments,addComment, changeVotes}= require('./controller')
 
 
 const app = express();
@@ -20,6 +20,10 @@ app.get('/api/articles/:article_id' , getArticle)
 app.get('/api/articles/:article_id/comments', getArticleComments)
 
 app.post('/api/articles/:article_id/comments', addComment);
+
+//PATCH /api/articles/:article_id        { inc_votes: newVote }
+
+app.patch('/api/articles/:article_id', changeVotes)
 
 
 app.use((err, req, res, next)=>{

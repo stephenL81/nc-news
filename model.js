@@ -46,15 +46,25 @@ function returnAllArticles(){
 }
 
 function addCommentToDb(articleId ,username, body){
-    return db.query(`INSERT INTO comments(article_id, author, body) VALUES ($1, $2, $3)  RETURNING *`, [articleId, username , body]) // IN QUERY IS IT USERNAME OR AUTHOR?
+    if (!username || !body) return Promise.reject({ status: 400, msg: "Required fields not provided"});
+    return db.query(`INSERT INTO comments(article_id, author, body) VALUES ($1, $2, $3)  RETURNING *`, [articleId, username , body])
     .then(result => {
-        console.log('in the model')
     return result.rows[0]
     })
-    .catch(err => {
-        console.error(err); // Log the error details
-        throw err; // Re-throw the error to be caught by the next error handler
-      });
+
 }
     
-module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb}
+
+function changeDbVotes(articleId , voteChange){
+if(!articleId || !voteChange) return Promise.reject({ status: 400, msg: "Required fields not provided"});
+return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2`, [voteChange, articleId])
+.then(result =>{
+    console.log(result)
+    return result.rows[0]
+})
+}
+module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb,changeDbVotes}
+
+//UPDATE Customers
+//SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
+//WHERE CustomerID = 1;

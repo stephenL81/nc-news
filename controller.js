@@ -72,11 +72,22 @@ function addComment(req , res , next){
     res.status(201).send({ comment });
     })
 
-.catch(next)
+// .catch(next)
+.catch(err =>{
+    next(err)})
 }
 
- 
+ function changeVotes(req , res , next){
+    const articleId = req.params.article_id;
+    const voteChange = req.body.inc_votes;
+
+    changeDbVotes(articleId, voteChange)
+    .then     //return status or catch error
+    (change => {
+        res.status(200).send({change})
+    })
+ }
     
 
-module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment};
+module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment, changeVotes};
 
