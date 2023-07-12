@@ -1,5 +1,5 @@
 
-const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb} = require("./model")
+const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb, changeDbVotes} = require("./model")
 const endpointsData = require('./endpoints.json')
 
 
@@ -68,6 +68,7 @@ function addComment(req , res , next){
     const body = req.body.body;
     addCommentToDb(articleId , username, body)
     .then(comment =>{
+        console.log('here!!!!!')
     res.status(201).send({ comment });
     })
 
@@ -77,14 +78,20 @@ function addComment(req , res , next){
 }
 
  function changeVotes(req , res , next){
-    const articleId = req.params.article_id;
-    const voteChange = req.body.inc_votes;
-
+     const articleId = req.params.article_id;
+     const voteChange = req.body.inc_votes;
+    //  console.log('Inside changeVotes controller')
+    // console.log(articleId, voteChange)
     changeDbVotes(articleId, voteChange)
     .then     //return status or catch error
-    (change => {
-        res.status(200).send({change})
+    (data => {
+        //console.log('After changeDbVotes')
+        res.status(200).send({data})
     })
+    .catch((err) => {
+        //console.log('Error in changeVotes:', err);
+        next(err); // Pass the error to the error handling middleware
+      });
  }
     
 

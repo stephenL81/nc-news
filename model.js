@@ -48,7 +48,7 @@ function returnAllArticles(){
 function addCommentToDb(articleId ,username, body){
     if (!username || !body) return Promise.reject({ status: 400, msg: "Required fields not provided"});
     console.log('result')
-    return db.query(`INSERT INTO comments(article_id, author, body) VALUES ($1, $2, $3)  RETURNING *`, [articleId, username , body])
+    return db.query("INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3)  RETURNING *;", [articleId, username , body])
     .then(result => {
     return result.rows[0]
     })
@@ -60,19 +60,46 @@ function addCommentToDb(articleId ,username, body){
 }
     
 
-function changeDbVotes(articleId , voteChange){
-if(!articleId || !voteChange) return Promise.reject({ status: 400, msg: "Required fields not provided"});
-return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2`, [voteChange, articleId])
-.then(result =>{
-    if(result.rows.length === 0){
-        return Promise.reject({
+// function changeDbVotes(articleId , voteChange){
+//     if(!articleId || !voteChange) return Promise.reject({ status: 400, msg: "Required fields not provided"});
+//     console.log('in model')
+// return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2`, [voteChange, articleId])
+// .then(result =>{
+//     console.log('query result:',results);
+//     if(result.rows.length === 0){
+//         return Promise.reject({
+//             status: 404,
+//             msg: `Not Found`,
+//     })}
+//     console.log('updated article', result.rows[0]);
+//     return result.rows[0]
+// })
+// .catch((err) => {
+//     console.log('query error:', err)
+//     throw err;
+// })
+// }
+function changeDbVotes(articleId, voteChange) {
+    if (!articleId || !voteChange)
+    return Promise.reject({ status: 400, msg: "Required fields not provided" });
+    return db
+      .query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING*;`, [voteChange,articleId])
+      .then((result) => {
+       
+        if (result.rows.length === 0) {
+          return Promise.reject({
             status: 404,
             msg: `Not Found`,
-    })}
-    console.log(result)
-    return result.rows[0]
-})
-}
+          });
+        }
+       // console.log('updated article:', result.rows[0]);
+        return result.rows[0];
+      })
+      .catch((err) => {
+        //console.log('query error:', err);
+        throw err; // Rethrow the error to be caught by the caller
+      });
+  }
 module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb,changeDbVotes}
 
 //UPDATE Customers

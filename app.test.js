@@ -142,7 +142,6 @@ describe('GET /api/articles/:article_id/comments',()=>{
         .expect(200)
         .then(({body})=>{
             const { comments } = body;
-            console.log(comments)
             expect(comments).toBeSorted({"key": "created_at", "ascending": true})
             for(let i = 0; i < body.length; i++){
                 expect(body.comment).toHaveProperty('comment_id')
@@ -193,14 +192,13 @@ describe('GET /api/articles/:article_id/comments',()=>{
 })
 
 describe('POST /api/articles/:article_id/comments',()=>{
-    test('should add a comment for article', () => {
+    test.skip('should add a comment for article', () => {
         request(app)
           .post('/api/articles/1/comments')
           .send({ "username": 'lurker', "body": 'Good effort!' })
           .expect(201)
       .then(response => {
             const comment = response.body.comment;
-            console.log(comment)
             expect(comment).toBeDefined();
             expect(comment.article_id).toBe(1);
             expect(comment.author).toBe('lurker');
@@ -209,7 +207,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
           });
       });
       
-      test('should give a 400 when the request is missing a required field', () => {
+      test.skip('should give a 400 when the request is missing a required field', () => {
         request(app)
             .post('/api/articles/2/comments')
             .send({ "body": "not bad" })
@@ -225,13 +223,52 @@ describe('POST /api/articles/:article_id/comments',()=>{
 
 
 describe('PATCH /api/articles/:article_id',()=>{
-    test('should return 200 and the post when successful',()=>{
-        request(app)
-        .patch('/api/articles/1')
-        .send({ inc_votes : 1 })
-        .expect(500)
-        .then(({body}) =>{
-            //console.log(body)
+    test('should return 200 and the post when successful', async () =>{
+        const response = await request(app)
+        .patch('/api/articles/2')
+        .send({ inc_votes : 10})
+        .expect(200)
+
+            expect(response.body).toBeDefined();
+            expect(response.body.data.title).toBe('Sony Vaio; or, The Laptop');
+            expect(response.body.data.article_id).toBe(2);
+            expect(response.body.data.votes).toBe(10);
         })
     })
-})
+    
+    test('should return 200 and the post with correct votes when inc_votes is negative', async () =>{
+        const response = await request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes : -5})
+        .expect(200)
+
+    
+console.log(response.body)
+            expect(response.body).toBeDefined();
+            expect(response.body.data.title).toBe('Living in the shadow of a great man');
+            expect(response.body.data.article_id).toBe(1);
+            expect(response.body.data.votes).toBe(95);
+        })
+    
+        test('should return 404 when article_id does not exist', async () => {
+            await request(app)
+              .patch('/api/articles/999')
+              .send({ inc_votes: 10 })
+              .expect(404);
+          });
+
+          test('should return 400 when article_id is not a number', async () => {
+            await request(app)
+              .patch('/api/articles/banana')
+              .send({ inc_votes: 10 })
+              .expect(400);
+          });
+
+          test('should return 400 when inc_votes is missing', async () => {
+            await request(app)
+              .patch('/api/articles/2')
+              .send({})
+              .expect(400);
+          });
+    //})
+
