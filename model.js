@@ -47,9 +47,9 @@ function returnAllArticles(){
 
 function addCommentToDb(articleId ,username, body){
     if (!username || !body) return Promise.reject({ status: 400, msg: "Required fields not provided"});
-    console.log('result')
     return db.query("INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3)  RETURNING *;", [articleId, username , body])
     .then(result => {
+        console.log(result)
     return result.rows[0]
     })
     .catch(err =>{
@@ -92,16 +92,18 @@ function changeDbVotes(articleId, voteChange) {
             msg: `Not Found`,
           });
         }
-       // console.log('updated article:', result.rows[0]);
         return result.rows[0];
       })
       .catch((err) => {
-        //console.log('query error:', err);
-        throw err; // Rethrow the error to be caught by the caller
+        throw err; 
       });
   }
-module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb,changeDbVotes}
 
-//UPDATE Customers
-//SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
-//WHERE CustomerID = 1;
+  function deleteCommentFromDb(commentId) {
+    return db.query(`DELETE FROM comments WHERE comment_id = $1;`, [commentId])
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb,changeDbVotes,deleteCommentFromDb}

@@ -198,6 +198,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
           .send({ "username": 'lurker', "body": 'Good effort!' })
           .expect(201)
       .then(response => {
+        console.log(response.rows)
             const comment = response.body.comment;
             expect(comment).toBeDefined();
             expect(comment.article_id).toBe(1);
@@ -207,7 +208,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
           });
       });
       
-      test.skip('should give a 400 when the request is missing a required field', () => {
+      test('should give a 400 when the request is missing a required field', () => {
         request(app)
             .post('/api/articles/2/comments')
             .send({ "body": "not bad" })
@@ -241,9 +242,6 @@ describe('PATCH /api/articles/:article_id',()=>{
         .patch('/api/articles/1')
         .send({ inc_votes : -5})
         .expect(200)
-
-    
-console.log(response.body)
             expect(response.body).toBeDefined();
             expect(response.body.data.title).toBe('Living in the shadow of a great man');
             expect(response.body.data.article_id).toBe(1);
@@ -270,5 +268,33 @@ console.log(response.body)
               .send({})
               .expect(400);
           });
-    //})
+
+          describe('DELETE /api/articles/:article_id', () => {
+            test('should delete the specified article and respond with 204', () => {
+                return request(app)
+                .delete('/api/comments/1')
+                .then((response) => {
+                 expect(response.status).toBe(204);
+          
+                  return request(app).get('/api/comments/1')
+                  .then((response) =>{
+                    expect(response.status).toBe(404);
+                  })
+                  
+                });
+            });
+          
+            test('should return 404 if the article does not exist', () => {
+              return request(app)
+              .delete('/api/articles/999')
+              .expect(404);
+            });
+          
+            test.skip('should return 400 if the article ID is not valid', () => {
+              return request(app)
+              .delete('/api/articles/something')
+              .expect(400);
+            });
+          });
+              //})
 

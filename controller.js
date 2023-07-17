@@ -1,5 +1,5 @@
 
-const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb, changeDbVotes} = require("./model")
+const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb, changeDbVotes,deleteCommentFromDb} = require("./model")
 const endpointsData = require('./endpoints.json')
 
 
@@ -64,7 +64,7 @@ function getAllArticles(req,res){
 
 function addComment(req , res , next){
     const articleId = req.params.article_id;
-    const username = req.body.username;   // why am I getting undefined for what is sent???
+    const username = req.body.username;
     const body = req.body.body;
     addCommentToDb(articleId , username, body)
     .then(comment =>{
@@ -80,20 +80,28 @@ function addComment(req , res , next){
  function changeVotes(req , res , next){
      const articleId = req.params.article_id;
      const voteChange = req.body.inc_votes;
-    //  console.log('Inside changeVotes controller')
-    // console.log(articleId, voteChange)
     changeDbVotes(articleId, voteChange)
-    .then     //return status or catch error
+    .then     
     (data => {
-        //console.log('After changeDbVotes')
-        res.status(200).send({data})
+    res.status(200).send({data})
     })
     .catch((err) => {
-        //console.log('Error in changeVotes:', err);
-        next(err); // Pass the error to the error handling middleware
+        next(err);
       });
  }
     
+ function deleteComment(req, res, next) {
+    const commentId = req.params.comment_id;
+    console.log(commentId)
+    if(isNaN(commentId)){
+        res.status(400).send({msg: "Bad Request"})
+    }
+    deleteCommentFromDb(commentId)
+      .then(() => {
+        res.sendStatus(204);
+      })
+      .catch(next);
+  }
 
-module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment, changeVotes};
+module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment, changeVotes,deleteComment};
 
