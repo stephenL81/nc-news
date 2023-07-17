@@ -1,11 +1,7 @@
-const express = require('express')
-
-
-const {getTopics , getApi, getAllArticles, getArticle,getArticleComments}= require('./controller')
-
-
+const express = require('express');
+const {getTopics , getApi, getAllArticles, getArticle,getArticleComments}= require('./controller');
 const app = express();
-
+const cors = require('cors');
 app.get('/api/topics' , getTopics)
 
 app.get('/api' ,getApi)
