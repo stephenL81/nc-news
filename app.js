@@ -1,5 +1,4 @@
 const express = require('express')
-const bodyParser = require('body-parser');
 
 
 const {getTopics , getApi, getAllArticles, getArticle,getArticleComments,addComment, changeVotes, deleteComment}= require('./controller')
@@ -10,7 +9,7 @@ const cors = require('cors');
 
 app.use(cors());
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get('/api/topics' , getTopics)
 app.get('/api' ,getApi)
