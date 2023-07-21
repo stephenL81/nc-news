@@ -44,4 +44,47 @@ function returnAllArticles(){
         return {"articles":data.rows}
     })
 }
-module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments}
+
+function addCommentToDb(articleId ,username, body){
+    if (!username || !body) return Promise.reject({ status: 400, msg: "Required fields not provided"});
+    return db.query("INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3)  RETURNING *;", [articleId, username , body])
+    .then(result => {
+        console.log(result)
+    return result.rows[0]
+    })
+    .catch(err =>{
+        console.log(err)
+        throw err;
+    })
+
+}
+    
+
+function changeDbVotes(articleId, voteChange) {
+    if (!articleId || !voteChange)
+    return Promise.reject({ status: 400, msg: "Required fields not provided" });
+    return db
+      .query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING*;`, [voteChange,articleId])
+      .then((result) => {
+       
+        if (result.rows.length === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: `Not Found`,
+          });
+        }
+        return result.rows[0];
+      })
+      .catch((err) => {
+        throw err; 
+      });
+  }
+
+  function deleteCommentFromDb(commentId) {
+    return db.query(`DELETE FROM comments WHERE comment_id = $1;`, [commentId])
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+module.exports = {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb,changeDbVotes,deleteCommentFromDb}

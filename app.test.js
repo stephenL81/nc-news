@@ -159,6 +159,18 @@ describe('GET /api/articles/:article_id/comments',()=>{
             }
         })
     })
+    
+    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body})=>{
+            
+            expect(body.msg).toBe(`Not Found`)
+            
+        })
+    })
+    
     test('should respond with a 400 if the provided id is not valid (eg not a number)',()=>{
         return request(app)
         .get('/api/articles/hi/comments')
@@ -169,16 +181,6 @@ describe('GET /api/articles/:article_id/comments',()=>{
     })
     })
 
-    test('should respond with a 404 if the provided id is not contained in the DB ',()=>{
-        return request(app)
-        .get('/api/articles/999/comments')
-        .expect(404)
-        .then(({body})=>{
-    
-            expect(body.msg).toBe(`Not Found`)
-
-    })
-})
     test('should receive 200 and an empty array for an article with no comments',()=>{
         return request(app)
         .get('/api/articles/2/comments')
@@ -188,3 +190,111 @@ describe('GET /api/articles/:article_id/comments',()=>{
         })
     })
 })
+
+describe('POST /api/articles/:article_id/comments',()=>{
+    test.skip('should add a comment for article', () => {
+        request(app)
+          .post('/api/articles/1/comments')
+          .send({ "username": 'lurker', "body": 'Good effort!' })
+          .expect(201)
+      .then(response => {
+        console.log(response.rows)
+            const comment = response.body.comment;
+            expect(comment).toBeDefined();
+            expect(comment.article_id).toBe(1);
+            expect(comment.author).toBe('lurker');
+            expect(comment.body).toBe('Good effort!');
+        })
+          });
+      });
+      
+      test('should give a 400 when the request is missing a required field', () => {
+        request(app)
+            .post('/api/articles/2/comments')
+            .send({ "body": "not bad" })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe('Required fields not provided')
+            
+
+    });
+
+      
+})
+
+
+describe('PATCH /api/articles/:article_id',()=>{
+    test('should return 200 and the post when successful', async () =>{
+        const response = await request(app)
+        .patch('/api/articles/2')
+        .send({ inc_votes : 10})
+        .expect(200)
+
+            expect(response.body).toBeDefined();
+            expect(response.body.data.title).toBe('Sony Vaio; or, The Laptop');
+            expect(response.body.data.article_id).toBe(2);
+            expect(response.body.data.votes).toBe(10);
+        })
+    })
+    
+    test('should return 200 and the post with correct votes when inc_votes is negative', async () =>{
+        const response = await request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes : -5})
+        .expect(200)
+            expect(response.body).toBeDefined();
+            expect(response.body.data.title).toBe('Living in the shadow of a great man');
+            expect(response.body.data.article_id).toBe(1);
+            expect(response.body.data.votes).toBe(95);
+        })
+    
+        test('should return 404 when article_id does not exist', async () => {
+            await request(app)
+              .patch('/api/articles/999')
+              .send({ inc_votes: 10 })
+              .expect(404);
+          });
+
+          test('should return 400 when article_id is not a number', async () => {
+            await request(app)
+              .patch('/api/articles/banana')
+              .send({ inc_votes: 10 })
+              .expect(400);
+          });
+
+          test('should return 400 when inc_votes is missing', async () => {
+            await request(app)
+              .patch('/api/articles/2')
+              .send({})
+              .expect(400);
+          });
+
+          describe('DELETE /api/articles/:article_id', () => {
+            test('should delete the specified article and respond with 204', () => {
+                return request(app)
+                .delete('/api/comments/1')
+                .then((response) => {
+                 expect(response.status).toBe(204);
+          
+                  return request(app).get('/api/comments/1')
+                  .then((response) =>{
+                    expect(response.status).toBe(404);
+                  })
+                  
+                });
+            });
+          
+            test('should return 404 if the article does not exist', () => {
+              return request(app)
+              .delete('/api/articles/999')
+              .expect(404);
+            });
+          
+            test.skip('should return 400 if the article ID is not valid', () => {
+              return request(app)
+              .delete('/api/articles/something')
+              .expect(400);
+            });
+          });
+              //})
+

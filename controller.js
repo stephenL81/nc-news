@@ -1,5 +1,5 @@
 
-const {returnTopics,returnArticle,returnAllArticles,returnArticleComments} = require("./model")
+const {returnTopics,returnArticle,returnAllArticles,returnArticleComments,addCommentToDb, changeDbVotes,deleteCommentFromDb} = require("./model")
 const endpointsData = require('./endpoints.json')
 
 
@@ -62,5 +62,46 @@ function getAllArticles(req,res){
     })
 }
 
-module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments};
+function addComment(req , res , next){
+    const articleId = req.params.article_id;
+    const username = req.body.username;
+    const body = req.body.body;
+    addCommentToDb(articleId , username, body)
+    .then(comment =>{
+        console.log('here!!!!!')
+    res.status(201).send({ comment });
+    })
+
+// .catch(next)
+.catch(err =>{
+    next(err)})
+}
+
+ function changeVotes(req , res , next){
+     const articleId = req.params.article_id;
+     const voteChange = req.body.inc_votes;
+    changeDbVotes(articleId, voteChange)
+    .then     
+    (data => {
+    res.status(200).send({data})
+    })
+    .catch((err) => {
+        next(err);
+      });
+ }
+    
+ function deleteComment(req, res, next) {
+    const commentId = req.params.comment_id;
+    console.log(commentId)
+    if(isNaN(commentId)){
+        res.status(400).send({msg: "Bad Request"})
+    }
+    deleteCommentFromDb(commentId)
+      .then(() => {
+        res.sendStatus(204);
+      })
+      .catch(next);
+  }
+
+module.exports = {getTopics,getApi,getArticle, getAllArticles, getArticleComments, addComment, changeVotes,deleteComment};
 
