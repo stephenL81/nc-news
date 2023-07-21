@@ -60,25 +60,6 @@ function addCommentToDb(articleId ,username, body){
 }
     
 
-// function changeDbVotes(articleId , voteChange){
-//     if(!articleId || !voteChange) return Promise.reject({ status: 400, msg: "Required fields not provided"});
-//     console.log('in model')
-// return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2`, [voteChange, articleId])
-// .then(result =>{
-//     console.log('query result:',results);
-//     if(result.rows.length === 0){
-//         return Promise.reject({
-//             status: 404,
-//             msg: `Not Found`,
-//     })}
-//     console.log('updated article', result.rows[0]);
-//     return result.rows[0]
-// })
-// .catch((err) => {
-//     console.log('query error:', err)
-//     throw err;
-// })
-// }
 function changeDbVotes(articleId, voteChange) {
     if (!articleId || !voteChange)
     return Promise.reject({ status: 400, msg: "Required fields not provided" });
